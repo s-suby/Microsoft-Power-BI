@@ -1,0 +1,347 @@
+// =============================================
+// FINANCIAL PERFORMANCE DASHBOARD
+// DAX MEASURES
+// =============================================
+
+// =============================================
+// CORE KPI MEASURES
+// =============================================
+
+Total Revenue =
+SUM(financial_data[Revenue])
+
+Gross Profit =
+SUM(financial_data[GrossProfit])
+
+Net Profit =
+SUM(financial_data[NetProfit])
+
+Profit Margin =
+DIVIDE(
+    [Net Profit],
+    [Total Revenue]
+)
+
+Total Expenses =
+SUM(financial_data[Expenses])
+
+Operating Cash Flow =
+SUM(financial_data[OperatingCashFlow])
+
+
+// =============================================
+// YEAR-OVER-YEAR MEASURES
+// =============================================
+
+Revenue YoY % =
+VAR Revenue2024 =
+    CALCULATE(
+        SUM(financial_data[Revenue]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2024
+    )
+VAR Revenue2023 =
+    CALCULATE(
+        SUM(financial_data[Revenue]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2023
+    )
+RETURN
+    DIVIDE(Revenue2024 - Revenue2023, Revenue2023)
+
+
+Gross Profit YoY % =
+VAR GP2024 =
+    CALCULATE(
+        SUM(financial_data[GrossProfit]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2024
+    )
+VAR GP2023 =
+    CALCULATE(
+        SUM(financial_data[GrossProfit]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2023
+    )
+RETURN
+    DIVIDE(GP2024 - GP2023, GP2023)
+
+
+Net Profit YoY % =
+VAR NP2024 =
+    CALCULATE(
+        SUM(financial_data[NetProfit]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2024
+    )
+VAR NP2023 =
+    CALCULATE(
+        SUM(financial_data[NetProfit]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2023
+    )
+RETURN
+    DIVIDE(NP2024 - NP2023, NP2023)
+
+
+Total Expenses YoY % =
+VAR Exp2024 =
+    CALCULATE(
+        SUM(financial_data[Expenses]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2024
+    )
+VAR Exp2023 =
+    CALCULATE(
+        SUM(financial_data[Expenses]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2023
+    )
+RETURN
+    DIVIDE(Exp2024 - Exp2023, Exp2023)
+
+
+Operating Cash Flow YoY % =
+VAR CF2024 =
+    CALCULATE(
+        SUM(financial_data[OperatingCashFlow]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2024
+    )
+VAR CF2023 =
+    CALCULATE(
+        SUM(financial_data[OperatingCashFlow]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2023
+    )
+RETURN
+    DIVIDE(CF2024 - CF2023, CF2023)
+
+
+    // =============================================
+// KPI DISPLAY LABELS
+// =============================================
+
+Revenue YoY Label =
+VAR Change = [Revenue YoY %]
+RETURN
+    "vs PY  " &
+    IF(
+        Change >= 0,
+        "▲ " & FORMAT(Change, "0.0%"),
+        "▼ " & FORMAT(ABS(Change), "0.0%")
+    )
+
+
+Gross Profit YoY Label =
+VAR Change = [Gross Profit YoY %]
+RETURN
+    "vs PY  " &
+    IF(
+        Change >= 0,
+        "▲ " & FORMAT(Change, "0.0%"),
+        "▼ " & FORMAT(ABS(Change), "0.0%")
+    )
+
+
+Net Profit YoY Label =
+VAR Change = [Net Profit YoY %]
+RETURN
+    "vs PY  " &
+    IF(
+        Change >= 0,
+        "▲ " & FORMAT(Change, "0.0%"),
+        "▼ " & FORMAT(ABS(Change), "0.0%")
+    )
+
+
+Total Expenses YoY Label =
+VAR Change = [Total Expenses YoY %]
+RETURN
+    "vs PY  " &
+    IF(
+        Change >= 0,
+        "▲ " & FORMAT(Change, "0.0%"),
+        "▼ " & FORMAT(ABS(Change), "0.0%")
+    )
+
+
+Operating Cash Flow YoY Label =
+VAR Change = [Operating Cash Flow YoY %]
+RETURN
+    "vs PY  " &
+    IF(
+        Change >= 0,
+        "▲ " & FORMAT(Change, "0.0%"),
+        "▼ " & FORMAT(ABS(Change), "0.0%")
+    )
+
+
+    // =============================================
+// PROFIT MARGIN YoY
+// =============================================
+
+Profit Margin PY =
+VAR NP2023 =
+    CALCULATE(
+        SUM(financial_data[NetProfit]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2023
+    )
+VAR Revenue2023 =
+    CALCULATE(
+        SUM(financial_data[Revenue]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2023
+    )
+RETURN
+    DIVIDE(NP2023, Revenue2023)
+
+
+Profit Margin Change pp =
+([Profit Margin] - [Profit Margin PY]) * 100
+
+
+Profit Margin YoY Label =
+VAR ChangePP = [Profit Margin Change pp]
+RETURN
+    "vs PY  " &
+    IF(
+        ChangePP >= 0,
+        "▲ " & FORMAT(ChangePP, "0.0") & " pp",
+        "▼ " & FORMAT(ABS(ChangePP), "0.0") & " pp"
+    )
+// =============================================
+// CHART MEASURES
+// =============================================
+
+Revenue CY =
+CALCULATE(
+    SUM(financial_data[Revenue]),
+    REMOVEFILTERS(financial_data[Date]),
+    REMOVEFILTERS(financial_data[Year]),
+    financial_data[Year] = 2024
+)
+
+Revenue PY =
+CALCULATE(
+    SUM(financial_data[Revenue]),
+    REMOVEFILTERS(financial_data[Date]),
+    REMOVEFILTERS(financial_data[Year]),
+    financial_data[Year] = 2023
+)
+
+Monthly Net Profit =
+SUM(financial_data[NetProfit])
+
+Profit Margin Monthly =
+DIVIDE(
+    SUM(financial_data[NetProfit]),
+    SUM(financial_data[Revenue])
+)
+
+
+// =============================================
+// REGION MEASURES
+// =============================================
+
+Region Revenue YoY % =
+VAR Revenue2024 =
+    CALCULATE(
+        SUM(financial_data[Revenue]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2024
+    )
+VAR Revenue2023 =
+    CALCULATE(
+        SUM(financial_data[Revenue]),
+        REMOVEFILTERS(financial_data[Date]),
+        REMOVEFILTERS(financial_data[Year]),
+        financial_data[Year] = 2023
+    )
+RETURN
+    DIVIDE(
+        Revenue2024 - Revenue2023,
+        Revenue2023
+    )
+
+
+Region Revenue YoY Label =
+VAR Change = [Region Revenue YoY %]
+RETURN
+    IF(
+        ISBLANK(Change),
+        BLANK(),
+        IF(
+            Change >= 0,
+            "▲ " & FORMAT(Change, "0.0%"),
+            "▼ " & FORMAT(ABS(Change), "0.0%")
+        )
+    )
+
+
+// =============================================
+// CONDITIONAL FORMATTING COLORS
+// =============================================
+
+Revenue YoY Color =
+IF(
+    [Revenue YoY %] >= 0,
+    "#16A34A",
+    "#DC2626"
+)
+
+Gross Profit YoY Color =
+IF(
+    [Gross Profit YoY %] >= 0,
+    "#16A34A",
+    "#DC2626"
+)
+
+Net Profit YoY Color =
+IF(
+    [Net Profit YoY %] >= 0,
+    "#16A34A",
+    "#DC2626"
+)
+
+Profit Margin YoY Color =
+IF(
+    [Profit Margin Change pp] >= 0,
+    "#16A34A",
+    "#DC2626"
+)
+
+Total Expenses YoY Color =
+IF(
+    [Total Expenses YoY %] <= 0,
+    "#16A34A",
+    "#DC2626"
+)
+
+Operating Cash Flow YoY Color =
+IF(
+    [Operating Cash Flow YoY %] >= 0,
+    "#16A34A",
+    "#DC2626"
+)
+
+Region Revenue YoY Color =
+IF(
+    [Region Revenue YoY %] >= 0,
+    "#16A34A",
+    "#DC2626"
+)
